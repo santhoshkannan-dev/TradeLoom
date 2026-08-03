@@ -1,11 +1,14 @@
-import uuid
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from common.models import BaseModel
 
 
-class Watchlist(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class Watchlist(BaseModel):
+    """
+    Represents an item in a user's watchlist.
+    """
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -17,8 +20,6 @@ class Watchlist(models.Model):
         _("Target Price"), max_digits=18, decimal_places=4, null=True, blank=True
     )
     notes = models.TextField(_("Notes"), blank=True)
-    created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("Updated At"), auto_now=True)
 
     class Meta:
         verbose_name = _("Watchlist Item")

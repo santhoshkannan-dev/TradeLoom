@@ -1,11 +1,14 @@
-import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from common.models import BaseModel
 from .portfolio import Portfolio
 
 
-class Holding(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class Holding(BaseModel):
+    """
+    Represents an aggregated stock/asset holding.
+    """
+
     portfolio = models.ForeignKey(
         Portfolio,
         on_delete=models.CASCADE,
@@ -25,8 +28,6 @@ class Holding(models.Model):
         _("Average Price"), max_digits=18, decimal_places=4, default=0.0
     )
     broker = models.CharField(_("Broker"), max_length=100, blank=True)
-    created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("Updated At"), auto_now=True)
 
     class Meta:
         verbose_name = _("Holding")
