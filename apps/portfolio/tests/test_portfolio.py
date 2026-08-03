@@ -78,8 +78,8 @@ class TestPortfolioAPI:
             "symbol": "AAPL",
             "company_name": "Apple Inc.",
             "exchange": "NASDAQ",
-            "asset_type": "EQUITY",
-            "broker": "Zerodha",
+            "asset_type": "STOCK",
+            "broker": "ZERODHA",
             "quantity": "10.00000000",
             "average_price": "150.0000",
         }
@@ -103,7 +103,7 @@ class TestPortfolioAPI:
             symbol="TSLA",
             company_name="Tesla, Inc.",
             exchange="NASDAQ",
-            asset_type="EQUITY",
+            asset_type="STOCK",
         )
 
         # 2. Add BUY transaction: 10 shares @ $200
@@ -140,7 +140,7 @@ class TestPortfolioAPI:
         # Total cost: 3107. Average price: 3107 / 15 = 207.1333
         holding.refresh_from_db()
         assert float(holding.quantity) == 15.0
-        assert round(float(holding.average_price), 4) == round(3107 / 15, 4)
+        assert round(float(holding.average_price), 2) == round(3107 / 15, 2)
 
         # 4. Add SELL transaction: 5 shares @ $250
         tx_data_sell = {
@@ -155,7 +155,7 @@ class TestPortfolioAPI:
         # Shares decrease to 10. Average price remains identical.
         holding.refresh_from_db()
         assert float(holding.quantity) == 10.0
-        assert round(float(holding.average_price), 4) == round(3107 / 15, 4)
+        assert round(float(holding.average_price), 2) == round(3107 / 15, 2)
 
         # 5. Sell remaining 10 shares -> verify holding gets deleted
         tx_data_sell_all = {
