@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.routers import SimpleRouter
 
 from apps.users.api.views import UserViewSet
-from apps.portfolio.views import (
+from apps.portfolio.api.views import (
     PortfolioViewSet,
     HoldingViewSet,
     TransactionViewSet,
