@@ -80,8 +80,8 @@ class TestPortfolioAPI:
             "exchange": "NASDAQ",
             "asset_type": "STOCK",
             "broker": "ZERODHA",
-            "quantity": "10.00000000",
-            "average_price": "150.0000",
+            "quantity": "10.0000",
+            "average_price": "150.00",
         }
         response = auth_client_a.post(url, data)
         assert response.status_code == status.HTTP_201_CREATED
@@ -111,11 +111,11 @@ class TestPortfolioAPI:
         tx_data_1 = {
             "holding": holding.id,
             "transaction_type": "BUY",
-            "quantity": "10.00000000",
-            "price": "200.0000",
-            "broker_charge": "5.0000",
-            "tax": "2.0000",
-            "date": timezone.now().isoformat(),
+            "quantity": "10.0000",
+            "price": "200.00",
+            "brokerage": "5.00",
+            "taxes": "2.00",
+            "transaction_date": timezone.now().isoformat(),
         }
         response = auth_client_a.post(tx_url, tx_data_1)
         assert response.status_code == status.HTTP_201_CREATED
@@ -130,9 +130,9 @@ class TestPortfolioAPI:
         tx_data_2 = {
             "holding": holding.id,
             "transaction_type": "BUY",
-            "quantity": "5.00000000",
-            "price": "220.0000",
-            "date": timezone.now().isoformat(),
+            "quantity": "5.0000",
+            "price": "220.00",
+            "transaction_date": timezone.now().isoformat(),
         }
         auth_client_a.post(tx_url, tx_data_2)
 
@@ -146,9 +146,9 @@ class TestPortfolioAPI:
         tx_data_sell = {
             "holding": holding.id,
             "transaction_type": "SELL",
-            "quantity": "5.00000000",
-            "price": "250.0000",
-            "date": timezone.now().isoformat(),
+            "quantity": "5.0000",
+            "price": "250.00",
+            "transaction_date": timezone.now().isoformat(),
         }
         auth_client_a.post(tx_url, tx_data_sell)
 
@@ -161,9 +161,9 @@ class TestPortfolioAPI:
         tx_data_sell_all = {
             "holding": holding.id,
             "transaction_type": "SELL",
-            "quantity": "10.00000000",
-            "price": "260.0000",
-            "date": timezone.now().isoformat(),
+            "quantity": "10.0000",
+            "price": "260.00",
+            "transaction_date": timezone.now().isoformat(),
         }
         auth_client_a.post(tx_url, tx_data_sell_all)
         assert not Holding.objects.filter(id=holding.id).exists()
@@ -178,3 +178,26 @@ class TestPortfolioAPI:
         response = auth_client_a.post(url, data)
         assert response.status_code == status.HTTP_201_CREATED
         assert Watchlist.objects.filter(user=user_a, symbol="GOOGL").exists()
+
+    def test_prevent_invalid_sales(self, auth_client_a, user_a):
+        portfolio = Portfolio.objects.create(user=user_a, name="Speculative Portfolio")
+        holding = Holding.objects.create(
+            portfolio=portfolio,
+            symbol="TSLA",
+            company_name="Tesla, Inc.",
+            exchange="NASDAQ",
+            asset_type="STOCK",
+        )
+        
+        # Try to sell 5 shares when we own 0
+        tx_url = reverse("api:transaction-list")
+        tx_data = {
+            "holding": holding.id,
+            "transaction_type": "SELL",
+            "quantity": "5.0000",
+            "price": "250.00",
+            "transaction_date": timezone.now().isoformat(),
+        }
+        response = auth_client_a.post(tx_url, tx_data)
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "Insufficient quantity to sell" in str(response.data)

@@ -11,9 +11,10 @@ class TransactionSerializer(serializers.ModelSerializer):
             "transaction_type",
             "quantity",
             "price",
-            "broker_charge",
-            "tax",
-            "date",
+            "brokerage",
+            "taxes",
+            "transaction_date",
+            "notes",
             "created_at",
             "updated_at",
         ]
@@ -31,8 +32,8 @@ class TransactionSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         qty = float(attrs.get("quantity", 0.0))
         price = float(attrs.get("price", 0.0))
-        charge = float(attrs.get("broker_charge", 0.0))
-        tax = float(attrs.get("tax", 0.0))
+        brokerage = float(attrs.get("brokerage", 0.0))
+        taxes = float(attrs.get("taxes", 0.0))
 
         if qty <= 0.0:
             raise serializers.ValidationError(
@@ -42,12 +43,12 @@ class TransactionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"price": "Price cannot be negative."}
             )
-        if charge < 0.0:
+        if brokerage < 0.0:
             raise serializers.ValidationError(
-                {"broker_charge": "Broker charge cannot be negative."}
+                {"brokerage": "Brokerage cannot be negative."}
             )
-        if tax < 0.0:
+        if taxes < 0.0:
             raise serializers.ValidationError(
-                {"tax": "Tax cannot be negative."}
+                {"taxes": "Taxes cannot be negative."}
             )
         return attrs

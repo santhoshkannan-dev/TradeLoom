@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Portfolio, Holding
+from .models import Portfolio, Holding, Transaction
 
 
 @admin.register(Portfolio)
@@ -40,4 +40,23 @@ class HoldingAdmin(admin.ModelAdmin):
         "exchange",
         "broker",
         "asset_type",
+    )
+
+
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = (
+        "holding",
+        "transaction_type",
+        "quantity",
+        "price",
+        "transaction_date",
+    )
+
+    search_fields = (
+        "holding__symbol",
+    )
+
+    list_filter = (
+        "transaction_type",
     )

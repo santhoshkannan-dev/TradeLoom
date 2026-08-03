@@ -13,6 +13,7 @@ from apps.portfolio.serializers.holding import HoldingSerializer
 from apps.portfolio.serializers.transaction import TransactionSerializer
 from apps.portfolio.serializers.watchlist import WatchlistSerializer
 from apps.portfolio.services.dashboard_service import calculate_portfolio_dashboard
+from apps.portfolio.services.transaction_service import create_transaction
 
 
 class PortfolioViewSet(viewsets.ModelViewSet):
@@ -66,12 +67,12 @@ class HoldingViewSet(viewsets.ModelViewSet):
                 qty = float(raw_qty)
                 price = float(raw_price)
                 if qty > 0.0:
-                    Transaction.objects.create(
+                    create_transaction(
                         holding=holding,
                         transaction_type="BUY",
                         quantity=qty,
                         price=price,
-                        date=timezone.now(),
+                        transaction_date=timezone.now(),
                     )
             except ValueError:
                 pass
@@ -103,6 +104,20 @@ class TransactionViewSet(viewsets.ModelViewSet):
         if portfolio_id:
             queryset = queryset.filter(holding__portfolio_id=portfolio_id)
         return queryset
+
+    def perform_create(self, serializer):
+        validated_data = serializer.validated_data
+        instance = create_transaction(
+            holding=validated_data["holding"],
+            transaction_type=validated_data["transaction_type"],
+            quantity=validated_data["quantity"],
+            price=validated_data["price"],
+            transaction_date=validated_data["transaction_date"],
+            brokerage=validated_data.get("brokerage", 0.0),
+            taxes=validated_data.get("taxes", 0.0),
+            notes=validated_data.get("notes", ""),
+        )
+        serializer.instance = instance
 
 
 class WatchlistViewSet(viewsets.ModelViewSet):
