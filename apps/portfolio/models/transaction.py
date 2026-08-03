@@ -38,7 +38,7 @@ class Transaction(BaseModel):
     )
     date = models.DateTimeField(_("Transaction Date"))
 
-    class Meta:
+    class Meta(BaseModel.Meta):
         verbose_name = _("Transaction")
         verbose_name_plural = _("Transactions")
         ordering = ["-date", "-created_at"]

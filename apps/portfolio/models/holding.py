@@ -29,7 +29,7 @@ class Holding(BaseModel):
     )
     broker = models.CharField(_("Broker"), max_length=100, blank=True)
 
-    class Meta:
+    class Meta(BaseModel.Meta):
         verbose_name = _("Holding")
         verbose_name_plural = _("Holdings")
         unique_together = ("portfolio", "symbol")

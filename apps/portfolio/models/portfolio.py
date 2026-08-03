@@ -32,7 +32,7 @@ class Portfolio(BaseModel):
         default="INR",
     )
 
-    class Meta:
+    class Meta(BaseModel.Meta):
         ordering = ["name"]
         verbose_name = _("Portfolio")
         verbose_name_plural = _("Portfolios")

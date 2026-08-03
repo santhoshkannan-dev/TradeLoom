@@ -21,7 +21,7 @@ class Watchlist(BaseModel):
     )
     notes = models.TextField(_("Notes"), blank=True)
 
-    class Meta:
+    class Meta(BaseModel.Meta):
         verbose_name = _("Watchlist Item")
         verbose_name_plural = _("Watchlist Items")
         unique_together = ("user", "symbol")
