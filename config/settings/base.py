@@ -327,6 +327,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "apps.market.tasks.update_market_quotes",
         "schedule": 300.0,  # every 5 minutes
     },
+    "update-financial-news-every-hour": {
+        "task": "apps.news.tasks.update_financial_news",
+        "schedule": 3600.0,  # every hour
+    },
 }
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#worker-send-task-events
 CELERY_WORKER_SEND_TASK_EVENTS = True

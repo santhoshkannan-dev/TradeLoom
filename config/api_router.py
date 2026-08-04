@@ -28,4 +28,5 @@ urlpatterns = router.urls + [
     path("market/", include("apps.market.api.urls", namespace="market")),
     path("brokers/", include("apps.brokers.api.urls", namespace="brokers")),
     path("analytics/", include("apps.analytics.api.urls", namespace="analytics")),
+    path("news/", include("apps.news.api.urls", namespace="news")),
 ]
