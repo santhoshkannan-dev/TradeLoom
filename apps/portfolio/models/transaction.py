@@ -43,19 +43,19 @@ class Transaction(BaseModel):
     class Meta(BaseModel.Meta):
         verbose_name = _("Transaction")
         verbose_name_plural = _("Transactions")
-        ordering = ["-transaction_date", "-created_at"]
+        ordering = ["-transaction_date"]
 
     def __str__(self):
-        return f"{self.transaction_type} {self.holding.symbol} {self.quantity} @ {self.price}"
+        return f"{self.transaction_type} {self.holding.symbol}"
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        from apps.portfolio.services.portfolio_service import recalculate_holding
-        recalculate_holding(self.holding.portfolio, self.holding.symbol)
+        from apps.portfolio.services.holding_service import HoldingService
+        HoldingService.recalculate_holding(self.holding.portfolio, self.holding.symbol)
 
     def delete(self, *args, **kwargs):
         portfolio = self.holding.portfolio
         symbol = self.holding.symbol
         super().delete(*args, **kwargs)
-        from apps.portfolio.services.portfolio_service import recalculate_holding
-        recalculate_holding(portfolio, symbol)
+        from apps.portfolio.services.holding_service import HoldingService
+        HoldingService.recalculate_holding(portfolio, symbol)

@@ -200,4 +200,4 @@ class TestPortfolioAPI:
         }
         response = auth_client_a.post(tx_url, tx_data)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert "Insufficient quantity to sell" in str(response.data)
+        assert "Cannot sell more shares than available" in str(response.data)

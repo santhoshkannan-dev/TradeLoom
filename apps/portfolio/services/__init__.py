@@ -1,9 +1,7 @@
-from .portfolio_service import recalculate_holding
-from .transaction_service import create_transaction
-from .dashboard_service import calculate_portfolio_dashboard
+from .transaction_service import TransactionService
+from .holding_service import HoldingService
 
 __all__ = [
-    "recalculate_holding",
-    "create_transaction",
-    "calculate_portfolio_dashboard",
+    "TransactionService",
+    "HoldingService",
 ]

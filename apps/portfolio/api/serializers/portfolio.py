@@ -25,6 +25,5 @@ class PortfolioSerializer(serializers.ModelSerializer):
     def get_total_value(self, obj) -> float:
         total = 0.0
         for holding in obj.holdings.all():
-            # For now, base calculation on average_price since Yahoo Finance is not integrated yet
             total += float(holding.quantity) * float(holding.average_price)
         return round(total, 4)

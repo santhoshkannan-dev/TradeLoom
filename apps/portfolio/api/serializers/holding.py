@@ -47,7 +47,6 @@ class HoldingSerializer(serializers.ModelSerializer):
         return value
 
     def get_current_price(self, obj) -> float:
-        # Fallback to average price for now (Yahoo Finance integrated in Week 5)
         return float(obj.average_price)
 
     def get_market_value(self, obj) -> float:
@@ -55,9 +54,7 @@ class HoldingSerializer(serializers.ModelSerializer):
         return round(float(obj.quantity) * price, 4)
 
     def get_total_gain_loss(self, obj) -> float:
-        # Currently 0.0 since current_price = average_price
         return 0.0
 
     def get_total_gain_loss_percentage(self, obj) -> float:
-        # Currently 0.0 since current_price = average_price
         return 0.0
