@@ -1,82 +1,143 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Cpu, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Cpu, Eye, EyeOff, ArrowRight, GitFork, Check } from 'lucide-react';
+
+const perks = [
+  'Free forever plan included',
+  'Connect unlimited brokers',
+  'AI-powered insights on day 1',
+  'No credit card required',
+];
 
 export default function RegisterPage() {
-  const navigate = useNavigate();
+  const [show, setShow] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    localStorage.setItem('token', 'mock_token_12345');
-    navigate('/dashboard');
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-[#080710] text-[#9ca3af]">
-      <div className="w-full max-w-md bg-gradient-to-b from-[#151324] to-[#0f0e1c] border border-white/5 rounded-2xl p-8 shadow-2xl relative overflow-hidden backdrop-blur-md">
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-        
-        <div className="flex flex-col items-center mb-8 text-center">
-          <div className="p-3 bg-purple-500/10 rounded-xl border border-purple-500/20 text-purple-400 mb-3">
-            <Cpu className="w-6 h-6" />
-          </div>
-          <h1 className="text-xl font-bold text-white tracking-tight">Create Account</h1>
-          <p className="text-xs text-gray-500 mt-1">Start tracking your multi-broker holdings with AI</p>
+    <div className="min-h-screen bg-[#05040f] flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-purple-800/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-indigo-800/6 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(rgba(167,139,250,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(167,139,250,0.5) 1px, transparent 1px)`,
+          backgroundSize: '60px 60px',
+        }}
+      />
+
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-md space-y-8"
+      >
+        {/* Logo */}
+        <div className="text-center space-y-3">
+          <Link to="/" className="inline-flex items-center gap-2 mb-2">
+            <div className="p-2 rounded-xl bg-purple-600/10 border border-purple-500/20">
+              <Cpu className="w-5 h-5 text-purple-400" />
+            </div>
+            <span className="font-bold text-white text-lg tracking-tight">TradeLoom</span>
+          </Link>
+          <h1 className="text-3xl font-extrabold text-white tracking-tight">Create your account</h1>
+          <p className="text-gray-400 text-sm">Start managing your investments intelligently</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-[10px] uppercase font-bold text-gray-500 tracking-wider mb-1">Full Name</label>
-            <input 
-              type="text" 
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="John Doe"
-              className="w-full px-4 py-3 rounded-xl bg-white/[0.02] border border-white/5 text-sm text-white focus:outline-none focus:border-purple-500/50 transition-colors"
-              required
-            />
+        {/* Perks */}
+        <div className="flex flex-wrap justify-center gap-3">
+          {perks.map((p) => (
+            <div key={p} className="flex items-center gap-1.5 text-[11px] text-gray-400">
+              <Check className="w-3 h-3 text-emerald-400 shrink-0" />
+              {p}
+            </div>
+          ))}
+        </div>
+
+        {/* Card */}
+        <div className="glass-card rounded-2xl p-8 space-y-6">
+          {/* Social */}
+          <button className="w-full flex items-center justify-center gap-3 py-3 rounded-xl bg-white/[0.04] border border-white/8 text-sm font-medium text-gray-300 hover:bg-white/[0.07] hover:text-white transition-all">
+            <GitFork className="w-4 h-4" />
+            Continue with GitHub
+          </button>
+
+          <div className="flex items-center gap-4">
+            <div className="flex-1 h-px bg-white/8" />
+            <span className="text-[11px] text-gray-600 font-medium uppercase tracking-wider">or</span>
+            <div className="flex-1 h-px bg-white/8" />
           </div>
 
-          <div>
-            <label className="block text-[10px] uppercase font-bold text-gray-500 tracking-wider mb-1">Email Address</label>
-            <input 
-              type="email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@example.com"
-              className="w-full px-4 py-3 rounded-xl bg-white/[0.02] border border-white/5 text-sm text-white focus:outline-none focus:border-purple-500/50 transition-colors"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-[10px] uppercase font-bold text-gray-500 tracking-wider mb-1">Password</label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-xl bg-white/[0.02] border border-white/5 text-sm text-white focus:outline-none focus:border-purple-500/50 transition-colors"
-              required
-            />
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Full Name</label>
+              <input
+                id="register-name"
+                type="text"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="John Doe"
+                className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/8 text-white placeholder-gray-600 text-sm outline-none focus:border-purple-500/40 focus:bg-white/[0.06] transition-all"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</label>
+              <input
+                id="register-email"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/8 text-white placeholder-gray-600 text-sm outline-none focus:border-purple-500/40 focus:bg-white/[0.06] transition-all"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Password</label>
+              <div className="relative">
+                <input
+                  id="register-password"
+                  type={show ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-4 py-3 pr-12 rounded-xl bg-white/[0.04] border border-white/8 text-white placeholder-gray-600 text-sm outline-none focus:border-purple-500/40 focus:bg-white/[0.06] transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShow(!show)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+                >
+                  {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
           </div>
 
           <button
-            type="submit"
-            className="w-full flex items-center justify-center gap-2 text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(168,85,247,0.15)] border border-purple-500/30"
+            id="register-submit"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white bg-purple-600 hover:bg-purple-500 transition-all shadow-[0_0_25px_rgba(139,92,246,0.3)] group"
           >
-            Create Account <ArrowRight className="w-4 h-4" />
+            Create Free Account
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </button>
-        </form>
 
-        <div className="mt-6 pt-6 border-t border-white/5 text-center text-xs">
-          <span className="text-gray-500">Already have an account? </span>
-          <Link to="/login" className="text-purple-400 hover:text-purple-300 font-semibold">Sign in</Link>
+          <p className="text-center text-[11px] text-gray-600">
+            By creating an account you agree to our{' '}
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+            {' '}and{' '}
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>.
+          </p>
         </div>
-      </div>
+
+        <p className="text-center text-sm text-gray-500">
+          Already have an account?{' '}
+          <Link to="/login" className="text-purple-400 hover:text-purple-300 font-semibold transition-colors">
+            Sign in
+          </Link>
+        </p>
+      </motion.div>
     </div>
   );
 }
