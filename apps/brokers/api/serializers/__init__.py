@@ -1,3 +1,3 @@
-from .broker import BrokerAccountSerializer, CSVImportSerializer
+from .broker import BrokerAccountSerializer, CSVImportSerializer, ImportJobSerializer
 
-__all__ = ["BrokerAccountSerializer", "CSVImportSerializer"]
+__all__ = ["BrokerAccountSerializer", "CSVImportSerializer", "ImportJobSerializer"]
