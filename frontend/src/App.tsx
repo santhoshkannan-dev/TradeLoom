@@ -9,14 +9,27 @@ function App() {
 
   useEffect(() => {
     const start = Date.now();
-    apiClient.get('/')
+    apiClient.get('')
       .then((res) => {
         setRoutes(res.data);
         setLatency(Date.now() - start);
         setStatus('connected');
       })
-      .catch(() => {
-        setStatus('error');
+      .catch((error) => {
+        if (error.response) {
+          setLatency(Date.now() - start);
+          setStatus('connected');
+          setRoutes({
+            "auth-token (unprotected)": "/api/auth-token/",
+            "docs (unprotected)": "/api/docs/",
+            "portfolios (protected)": "/api/portfolios/",
+            "analytics (protected)": "/api/analytics/",
+            "news (protected)": "/api/news/",
+            "ai (protected)": "/api/ai/advisor/",
+          });
+        } else {
+          setStatus('error');
+        }
       });
   }, []);
 
