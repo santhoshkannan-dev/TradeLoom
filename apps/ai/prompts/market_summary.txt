@@ -1,0 +1,4 @@
+Analyze the recent market headlines:
+{market_news}
+
+Provide a brief, single-paragraph summary of the current market sentiments.

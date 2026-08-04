@@ -160,7 +160,21 @@ class AnalyticsService:
             "weaknesses": weaknesses,
         }
 
-        # 4. Save report
+        # 4. Save report after sanitizing NaN/Inf values
+        import math
+        def sanitize_json(data):
+            if isinstance(data, dict):
+                return {k: sanitize_json(v) for k, v in data.items()}
+            elif isinstance(data, list):
+                return [sanitize_json(v) for v in data]
+            elif isinstance(data, float):
+                if math.isnan(data) or math.isinf(data):
+                    return 0.0
+            return data
+
+        risk = sanitize_json(risk)
+        performance = sanitize_json(performance)
+
         report = AnalyticsReport.objects.create(
             portfolio=portfolio,
             score=health_score,
