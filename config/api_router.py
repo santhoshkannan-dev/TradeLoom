@@ -10,7 +10,7 @@ from apps.portfolio.api.views import (
     WatchlistViewSet,
 )
 
-from django.urls import path
+from django.urls import include, path
 from apps.portfolio.api.views.dashboard import DashboardAPIView
 
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
@@ -25,4 +25,5 @@ router.register("watchlist", WatchlistViewSet, basename="watchlist")
 app_name = "api"
 urlpatterns = router.urls + [
     path("dashboard/", DashboardAPIView.as_view(), name="dashboard"),
+    path("market/", include("apps.market.api.urls", namespace="market")),
 ]

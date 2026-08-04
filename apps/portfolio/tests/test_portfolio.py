@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch, MagicMock
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
@@ -202,7 +203,19 @@ class TestPortfolioAPI:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "Cannot sell more shares than available" in str(response.data)
 
-    def test_dashboard_api_and_calculations(self, auth_client_a, user_a):
+    @patch("apps.market.services.market_service.MarketService.get_quote")
+    def test_dashboard_api_and_calculations(self, mock_get_quote, auth_client_a, user_a):
+        def side_effect(symbol, *args, **kwargs):
+            mock_q = MagicMock()
+            if symbol == "INFY":
+                mock_q.current_price = Decimal("1540.00")
+            elif symbol == "TCS":
+                mock_q.current_price = Decimal("3450.00")
+            else:
+                mock_q.current_price = Decimal("0.00")
+            return mock_q
+        mock_get_quote.side_effect = side_effect
+
         # 1. Setup portfolios and holdings
         p1 = Portfolio.objects.create(user=user_a, name="Main Portfolio")
         p2 = Portfolio.objects.create(user=user_a, name="Retirement Portfolio")
@@ -247,12 +260,13 @@ class TestPortfolioAPI:
         assert response.status_code == status.HTTP_200_OK
 
         data = response.data
-        assert float(data["total_investment"]) == 65300.00
-        assert float(data["current_value"]) == 65300.00
-        assert float(data["total_profit"]) == 0.00
-        assert float(data["profit_percentage"]) == 0.00
-        assert data["total_holdings"] == 2
-        assert data["total_transactions"] == 2
+        summary = data["summary"]
+        assert float(summary["total_investment"]) == 65300.00
+        assert float(summary["current_value"]) == 65300.00
+        assert float(summary["profit"]) == 0.00
+        assert float(summary["profit_percentage"]) == 0.00
+        assert summary["total_holdings"] == 2
+        assert summary["total_transactions"] == 2
 
         # Asset allocations
         assert len(data["asset_allocation"]) == 1
