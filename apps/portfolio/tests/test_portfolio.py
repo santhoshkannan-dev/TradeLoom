@@ -201,3 +201,72 @@ class TestPortfolioAPI:
         response = auth_client_a.post(tx_url, tx_data)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "Cannot sell more shares than available" in str(response.data)
+
+    def test_dashboard_api_and_calculations(self, auth_client_a, user_a):
+        # 1. Setup portfolios and holdings
+        p1 = Portfolio.objects.create(user=user_a, name="Main Portfolio")
+        p2 = Portfolio.objects.create(user=user_a, name="Retirement Portfolio")
+
+        # INFY in main portfolio
+        h_infy = Holding.objects.create(
+            portfolio=p1,
+            symbol="INFY",
+            company_name="Infosys",
+            exchange="NSE",
+            asset_type="STOCK",
+            sector="IT",
+        )
+        Transaction.objects.create(
+            holding=h_infy,
+            transaction_type="BUY",
+            quantity="20.0000",
+            price="1540.00",
+            transaction_date=timezone.now(),
+        )
+
+        # TCS in retirement portfolio
+        h_tcs = Holding.objects.create(
+            portfolio=p2,
+            symbol="TCS",
+            company_name="TCS Ltd",
+            exchange="NSE",
+            asset_type="STOCK",
+            sector="IT",
+        )
+        Transaction.objects.create(
+            holding=h_tcs,
+            transaction_type="BUY",
+            quantity="10.0000",
+            price="3450.00",
+            transaction_date=timezone.now(),
+        )
+
+        # 2. Query Dashboard
+        url = reverse("api:dashboard")
+        response = auth_client_a.get(url)
+        assert response.status_code == status.HTTP_200_OK
+
+        data = response.data
+        assert float(data["total_investment"]) == 65300.00
+        assert float(data["current_value"]) == 65300.00
+        assert float(data["total_profit"]) == 0.00
+        assert float(data["profit_percentage"]) == 0.00
+        assert data["total_holdings"] == 2
+        assert data["total_transactions"] == 2
+
+        # Asset allocations
+        assert len(data["asset_allocation"]) == 1
+        assert data["asset_allocation"][0]["asset"] == "Stock"
+        assert float(data["asset_allocation"][0]["percentage"]) == 100.00
+
+        # Sector allocations
+        assert len(data["sector_allocation"]) == 1
+        assert data["sector_allocation"][0]["sector"] == "IT"
+        assert float(data["sector_allocation"][0]["percentage"]) == 100.00
+
+        # Top holdings (sorted by value descending: TCS 34500 > INFY 30800)
+        assert len(data["top_holdings"]) == 2
+        assert data["top_holdings"][0]["symbol"] == "TCS"
+        assert float(data["top_holdings"][0]["value"]) == 34500.00
+        assert data["top_holdings"][1]["symbol"] == "INFY"
+        assert float(data["top_holdings"][1]["value"]) == 30800.00
