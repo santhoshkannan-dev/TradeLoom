@@ -27,4 +27,5 @@ urlpatterns = router.urls + [
     path("dashboard/", DashboardAPIView.as_view(), name="dashboard"),
     path("market/", include("apps.market.api.urls", namespace="market")),
     path("brokers/", include("apps.brokers.api.urls", namespace="brokers")),
+    path("analytics/", include("apps.analytics.api.urls", namespace="analytics")),
 ]
