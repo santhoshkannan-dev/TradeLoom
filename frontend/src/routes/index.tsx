@@ -4,6 +4,7 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import LandingPage from '../features/landing/LandingPage';
 import LoginPage from '../features/auth/pages/LoginPage';
 import RegisterPage from '../features/auth/pages/RegisterPage';
+import ForgotPassword from '../features/auth/pages/ForgotPassword';
 import DashboardPage from '../features/dashboard/pages/DashboardPage';
 import PortfolioPage from '../features/portfolio/pages/PortfolioPage';
 import AnalyticsPage from '../features/analytics/pages/AnalyticsPage';
@@ -19,6 +20,7 @@ export default function AppRouter() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Route>
 
         {/* Dashboard / Protected routes */}
