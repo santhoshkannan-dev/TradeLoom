@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, ArrowRight, ShieldAlert, Sparkles } from 'lucide-react';
-import { RoleSelector, UserRole } from './RoleSelector';
+import { RoleSelector, type UserRole } from './RoleSelector';
 import { PasswordField } from './PasswordField';
 import { SocialLogin } from './SocialLogin';
 import { Button } from '../../../components/ui/Button';
