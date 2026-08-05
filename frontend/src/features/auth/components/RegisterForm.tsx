@@ -1,8 +1,9 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Mail, ShieldAlert, ArrowRight, ArrowLeft, Building2, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { ShieldAlert, ArrowRight, ArrowLeft, Building2, TrendingUp, CheckCircle2, Lock, FileText } from 'lucide-react';
 import { ProgressStepper } from './ProgressStepper';
 import { PasswordField } from './PasswordField';
+import { LegalModal } from './LegalModal';
 import { Button } from '../../../components/ui/Button';
 
 export function RegisterForm() {
@@ -17,7 +18,11 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState('Investor');
   const [connectedBroker, setConnectedBroker] = useState<string | null>(null);
-  const [acceptTerms, setAcceptTerms] = useState(true);
+  
+  // Legal Consent & Scroll-To-Accept Modal State
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [hasReadLegal, setHasReadLegal] = useState(false);
+  const [isLegalModalOpen, setIsLegalModalOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -28,6 +33,19 @@ export function RegisterForm() {
     { id: 'Manager', title: 'Portfolio Manager', desc: 'Institutional analytics, VaR & custom models.' },
   ];
 
+  const handleCheckboxClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    if (!hasReadLegal) {
+      e.preventDefault();
+      setIsLegalModalOpen(true);
+    }
+  };
+
+  const handleLegalAgreed = () => {
+    setHasReadLegal(true);
+    setAcceptTerms(true);
+    setError('');
+  };
+
   const handleNextStep = (e: FormEvent) => {
     e.preventDefault();
     if (step === 1) {
@@ -37,6 +55,11 @@ export function RegisterForm() {
       }
       if (password !== confirmPassword) {
         setError('Passwords do not match.');
+        return;
+      }
+      if (!acceptTerms || !hasReadLegal) {
+        setError('You must read and agree to the Terms of Service & Privacy Policy to proceed.');
+        setIsLegalModalOpen(true);
         return;
       }
       setError('');
@@ -53,7 +76,7 @@ export function RegisterForm() {
   };
 
   return (
-    <div className="space-y-6 text-left">
+    <div className="space-y-6 text-left relative">
       {/* Header & Stepper */}
       <div className="space-y-3">
         <div>
@@ -131,15 +154,47 @@ export function RegisterForm() {
               />
             </div>
 
-            <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer pt-1">
-              <input
-                type="checkbox"
-                checked={acceptTerms}
-                onChange={(e) => setAcceptTerms(e.target.checked)}
-                className="w-4 h-4 rounded bg-[#090d1c] border-white/10 text-purple-600 focus:ring-purple-500/30"
-              />
-              I agree to the <a href="#" className="text-purple-400 underline">Terms of Service</a> & <a href="#" className="text-purple-400 underline">Privacy Policy</a>
-            </label>
+            {/* Scroll-To-Accept Terms Consent Box */}
+            <div className="p-3.5 rounded-2xl bg-[#090d1c] border border-white/10 space-y-2 text-xs">
+              <label className="flex items-start gap-2.5 cursor-pointer text-gray-300">
+                <input
+                  type="checkbox"
+                  checked={acceptTerms}
+                  onClick={handleCheckboxClick}
+                  onChange={() => {}}
+                  className="w-4 h-4 mt-0.5 rounded bg-[#090d1c] border-white/10 text-purple-600 focus:ring-purple-500/30"
+                />
+                <span className="leading-relaxed text-[11px]">
+                  I have read and agree to the{' '}
+                  <button
+                    type="button"
+                    onClick={() => setIsLegalModalOpen(true)}
+                    className="text-purple-400 font-bold underline hover:text-purple-300"
+                  >
+                    Terms of Service
+                  </button>{' '}
+                  and{' '}
+                  <button
+                    type="button"
+                    onClick={() => setIsLegalModalOpen(true)}
+                    className="text-purple-400 font-bold underline hover:text-purple-300"
+                  >
+                    Privacy Policy
+                  </button>
+                  . I understand that AI-generated insights are informational only and do not constitute financial advice.
+                </span>
+              </label>
+
+              {!hasReadLegal && (
+                <button
+                  type="button"
+                  onClick={() => setIsLegalModalOpen(true)}
+                  className="w-full text-center text-[10px] text-purple-400 font-semibold bg-purple-500/10 border border-purple-500/20 py-1.5 rounded-xl hover:bg-purple-500/20 transition-all flex items-center justify-center gap-1.5"
+                >
+                  <FileText className="w-3 h-3" /> Read Legal Document to Accept
+                </button>
+              )}
+            </div>
           </div>
         )}
 
@@ -223,7 +278,7 @@ export function RegisterForm() {
 
           <Button
             type="submit"
-            disabled={isLoading || (step === 1 && !acceptTerms)}
+            disabled={isLoading || (step === 1 && (!acceptTerms || !hasReadLegal))}
             className="flex-1 py-3.5 text-sm font-bold tracking-wide flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(168,85,247,0.35)]"
           >
             {isLoading
@@ -245,6 +300,13 @@ export function RegisterForm() {
           Sign In
         </Link>
       </div>
+
+      {/* Scroll-To-Accept Legal Modal */}
+      <LegalModal
+        isOpen={isLegalModalOpen}
+        onClose={() => setIsLegalModalOpen(false)}
+        onAgree={handleLegalAgreed}
+      />
     </div>
   );
 }

@@ -5,6 +5,9 @@ import LandingPage from '../features/landing/LandingPage';
 import LoginPage from '../features/auth/pages/LoginPage';
 import RegisterPage from '../features/auth/pages/RegisterPage';
 import ForgotPassword from '../features/auth/pages/ForgotPassword';
+import TermsPage from '../features/legal/pages/TermsPage';
+import PrivacyPage from '../features/legal/pages/PrivacyPage';
+import DisclaimerPage from '../features/legal/pages/DisclaimerPage';
 import DashboardPage from '../features/dashboard/pages/DashboardPage';
 import PortfolioPage from '../features/portfolio/pages/PortfolioPage';
 import AnalyticsPage from '../features/analytics/pages/AnalyticsPage';
@@ -21,6 +24,9 @@ export default function AppRouter() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/legal/terms" element={<TermsPage />} />
+          <Route path="/legal/privacy" element={<PrivacyPage />} />
+          <Route path="/legal/disclaimer" element={<DisclaimerPage />} />
         </Route>
 
         {/* Dashboard / Protected routes */}
