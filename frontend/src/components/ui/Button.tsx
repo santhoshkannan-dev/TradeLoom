@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { motion, HTMLMotionProps } from 'framer-motion';
+import { motion, type HTMLMotionProps } from 'framer-motion';
 import { cn } from '../../lib/utils';
 
 interface ButtonProps extends HTMLMotionProps<'button'> {
