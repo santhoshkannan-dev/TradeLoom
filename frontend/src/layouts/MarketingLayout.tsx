@@ -1,9 +1,10 @@
 import { Outlet } from 'react-router-dom';
+import { AnimatedBackground } from '../components/ui/AnimatedBackground';
 
 export default function MarketingLayout() {
   return (
-    <div className="min-h-screen bg-[#080710] text-[#9ca3af] font-sans selection:bg-purple-500 selection:text-black">
+    <AnimatedBackground>
       <Outlet />
-    </div>
+    </AnimatedBackground>
   );
 }
