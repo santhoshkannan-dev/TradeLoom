@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Play, TrendingUp, TrendingDown, Activity, ArrowUpRight, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Play, TrendingUp, TrendingDown, Activity, Cpu, FileSpreadsheet, Building2, SlidersHorizontal } from 'lucide-react';
 import { Container } from '../../../components/ui/Container';
 import { Badge } from '../../../components/ui/Badge';
 import { Button } from '../../../components/ui/Button';
@@ -13,27 +13,23 @@ interface StockTicker {
   price: number;
   change: number;
   isUp: boolean;
-  history: number[];
 }
 
 export default function Hero() {
-  // Live stock state simulator
   const [stocks, setStocks] = useState<StockTicker[]>([
-    { symbol: 'TCS', name: 'Tata Consultancy Services', price: 3892.40, change: 1.45, isUp: true, history: [3850, 3865, 3860, 3880, 3892] },
-    { symbol: 'INFY', name: 'Infosys Limited', price: 1689.15, change: -0.38, isUp: false, history: [1700, 1695, 1698, 1690, 1689] },
-    { symbol: 'RELIANCE', name: 'Reliance Industries', price: 2748.90, change: 2.12, isUp: true, history: [2690, 2710, 2725, 2738, 2748] },
-    { symbol: 'HDFCBANK', name: 'HDFC Bank Ltd', price: 1562.30, change: 0.84, isUp: true, history: [1545, 1550, 1555, 1558, 1562] },
+    { symbol: 'TCS', name: 'Tata Consultancy Services', price: 3892.40, change: 1.45, isUp: true },
+    { symbol: 'INFY', name: 'Infosys Limited', price: 1689.15, change: -0.38, isUp: false },
+    { symbol: 'RELIANCE', name: 'Reliance Industries', price: 2748.90, change: 2.12, isUp: true },
+    { symbol: 'HDFCBANK', name: 'HDFC Bank Ltd', price: 1562.30, change: 0.84, isUp: true },
   ]);
 
-  const [activeTab, setActiveTab] = useState<'holdings' | 'trades' | 'allocations'>('holdings');
   const [portfolioVal, setPortfolioVal] = useState(1243200);
   const [recentFlash, setRecentFlash] = useState<string | null>(null);
 
-  // Live price tick simulation every 2.5s
   useEffect(() => {
     const interval = setInterval(() => {
       const targetIndex = Math.floor(Math.random() * stocks.length);
-      const deltaPercent = (Math.random() * 0.8 - 0.35); // -0.35% to +0.45%
+      const deltaPercent = (Math.random() * 0.8 - 0.35);
       
       setStocks((prev) =>
         prev.map((stock, i) => {
@@ -46,19 +42,26 @@ export default function Hero() {
             price: newPrice,
             change: newChange,
             isUp,
-            history: [...stock.history.slice(1), newPrice],
           };
         })
       );
 
       setPortfolioVal((prev) => Math.round(prev * (1 + (Math.random() * 0.2 - 0.08) / 100)));
       setRecentFlash(stocks[targetIndex].symbol);
-
       setTimeout(() => setRecentFlash(null), 1200);
     }, 2500);
 
     return () => clearInterval(interval);
   }, [stocks]);
+
+  const brokers = [
+    { name: 'Zerodha', icon: Building2, color: 'text-blue-400' },
+    { name: 'Groww', icon: TrendingUp, color: 'text-emerald-400' },
+    { name: 'Angel One', icon: Activity, color: 'text-purple-400' },
+    { name: 'Upstox', icon: Cpu, color: 'text-indigo-400' },
+    { name: 'CSV File', icon: FileSpreadsheet, color: 'text-amber-400' },
+    { name: 'Manual', icon: SlidersHorizontal, color: 'text-cyan-400' },
+  ];
 
   return (
     <section className="relative pt-12 pb-24 md:pt-24 md:pb-36 overflow-hidden">
@@ -105,15 +108,31 @@ export default function Hero() {
             </Link>
           </motion.div>
 
-          {/* Computer System Mockup with Animated Stocks */}
-          <motion.div variants={fadeUp} className="pt-10 max-w-5xl mx-auto">
+          {/* Floating Data Ingestion Pipeline Bar */}
+          <motion.div variants={fadeUp} className="pt-6">
+            <div className="flex flex-wrap items-center justify-center gap-3 max-w-3xl mx-auto p-3 rounded-2xl bg-[#0f0e24]/70 border border-white/10 backdrop-blur-xl">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-purple-300 mr-2">Streaming Feeds:</span>
+              {brokers.map((b) => {
+                const IconComponent = b.icon;
+                return (
+                  <div key={b.name} className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/5 border border-white/5 text-xs text-gray-300 hover:border-purple-500/30 transition-all">
+                    <IconComponent className={`w-3.5 h-3.5 ${b.color}`} />
+                    <span className="font-medium text-[11px]">{b.name}</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          {/* Computer Workstation Mockup */}
+          <motion.div variants={fadeUp} className="pt-6 max-w-5xl mx-auto">
             <div className="relative p-3 md:p-4 rounded-3xl bg-[#0e0d22]/90 border border-white/15 shadow-[0_30px_100px_rgba(168,85,247,0.18)] backdrop-blur-2xl transition-all">
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-400/50 to-transparent" />
 
-              {/* Monitor Screen Frame */}
               <div className="bg-[#080718] rounded-2xl border border-white/10 p-4 md:p-6 overflow-hidden relative text-left">
                 
-                {/* Screen Header Bar */}
+                {/* Header */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-4 border-b border-white/10 text-xs">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full bg-rose-500/80" />
@@ -122,7 +141,6 @@ export default function Hero() {
                     <span className="text-white font-bold tracking-tight text-sm ml-2">TradeLoom Workstation</span>
                   </div>
 
-                  {/* Live Marquee Ticker */}
                   <div className="hidden lg:flex items-center gap-4 bg-[#12102b] border border-white/10 px-3 py-1.5 rounded-xl text-[11px]">
                     <span className="text-emerald-400 font-bold flex items-center gap-1">
                       NIFTY 50 <span className="font-mono">24,380.20 (+0.72%)</span>
@@ -139,44 +157,21 @@ export default function Hero() {
                   </div>
                 </div>
 
-                {/* Main Screen Layout Grid */}
+                {/* Workstation Inner Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  
-                  {/* Left Sidebar Console Menu */}
                   <div className="hidden md:flex flex-col gap-2 p-3 bg-[#110f2c]/60 border border-white/5 rounded-2xl text-xs text-gray-400">
                     <div className="text-white font-semibold pb-2 border-b border-white/5 flex items-center justify-between">
                       <span>Console</span>
                       <Activity className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
                     </div>
-                    <button 
-                      onClick={() => setActiveTab('holdings')}
-                      className={`px-3 py-2 rounded-xl text-left font-medium transition-all ${activeTab === 'holdings' ? 'text-purple-300 bg-purple-500/20 border border-purple-500/30' : 'hover:text-white hover:bg-white/5'}`}
-                    >
-                      Holdings Feed
-                    </button>
-                    <button 
-                      onClick={() => setActiveTab('trades')}
-                      className={`px-3 py-2 rounded-xl text-left font-medium transition-all ${activeTab === 'trades' ? 'text-purple-300 bg-purple-500/20 border border-purple-500/30' : 'hover:text-white hover:bg-white/5'}`}
-                    >
-                      Live Orders
-                    </button>
-                    <button 
-                      onClick={() => setActiveTab('allocations')}
-                      className={`px-3 py-2 rounded-xl text-left font-medium transition-all ${activeTab === 'allocations' ? 'text-purple-300 bg-purple-500/20 border border-purple-500/30' : 'hover:text-white hover:bg-white/5'}`}
-                    >
-                      Allocations
-                    </button>
-
-                    <div className="mt-auto pt-4 border-t border-white/5 text-[10px] space-y-1 text-gray-500">
-                      <div>Broker API: <span className="text-emerald-400 font-mono">Connected</span></div>
-                      <div>Latency: <span className="text-white font-mono">14ms</span></div>
-                    </div>
+                    <div className="text-purple-300 bg-purple-500/20 px-3 py-2 rounded-xl border border-purple-500/30 font-medium">Dashboard</div>
+                    <div className="hover:text-white px-3 py-2">Portfolio</div>
+                    <div className="hover:text-white px-3 py-2">Holdings</div>
+                    <div className="hover:text-white px-3 py-2">Analytics</div>
+                    <div className="hover:text-white px-3 py-2">AI Advisor</div>
                   </div>
 
-                  {/* Main Workstation Screen */}
                   <div className="md:col-span-3 space-y-4">
-                    
-                    {/* Valuation Banner + TradeLoom Orb */}
                     <div className="p-4 rounded-2xl bg-gradient-to-r from-[#17143c] via-[#12102e] to-[#0d0c24] border border-purple-500/25 relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-4">
                       <div className="space-y-1">
                         <span className="text-[10px] uppercase font-semibold text-purple-300/80 tracking-wider">Live Portfolio Valuation</span>
@@ -200,10 +195,7 @@ export default function Hero() {
                       </div>
                     </div>
 
-                    {/* Animated Stocks Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      
-                      {/* Holdings & Real-Time Prices */}
                       <div className="p-4 bg-[#110f2c]/70 border border-white/10 rounded-2xl space-y-3">
                         <div className="flex justify-between items-center pb-2 border-b border-white/10">
                           <span className="text-xs font-bold text-white uppercase tracking-wider">Live Stock Feed</span>
@@ -248,7 +240,6 @@ export default function Hero() {
                         </div>
                       </div>
 
-                      {/* Live Market Performance Graph */}
                       <div className="p-4 bg-[#110f2c]/70 border border-white/10 rounded-2xl space-y-3 flex flex-col justify-between">
                         <div className="flex justify-between items-center pb-2 border-b border-white/10">
                           <span className="text-xs font-bold text-white uppercase tracking-wider">Performance Wave</span>
@@ -257,7 +248,6 @@ export default function Hero() {
                           </span>
                         </div>
 
-                        {/* Animated SVG Sparkline Chart */}
                         <div className="relative h-28 w-full flex items-end pt-2">
                           <svg className="w-full h-full overflow-visible" viewBox="0 0 100 40" preserveAspectRatio="none">
                             <defs>
@@ -297,7 +287,6 @@ export default function Hero() {
                     </div>
 
                   </div>
-
                 </div>
 
               </div>

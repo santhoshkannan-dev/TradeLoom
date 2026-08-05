@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check, Sparkles } from 'lucide-react';
 import { Container } from '../../../components/ui/Container';
 import { GlassCard } from '../../../components/ui/GlassCard';
 import { Button } from '../../../components/ui/Button';
@@ -65,16 +65,16 @@ export default function Pricing() {
             </p>
           </motion.div>
 
-          <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch">
             {plans.map((plan) => (
               <GlassCard 
                 key={plan.name}
                 glow={plan.popular}
-                className={plan.popular ? 'scale-[1.03] border-purple-500/40 bg-gradient-to-b from-[#181438] to-[#0f0e26]' : ''}
+                className={plan.popular ? 'scale-[1.04] border-purple-500/50 bg-gradient-to-b from-[#19153b] via-[#12102b] to-[#0e0c24] shadow-[0_0_60px_rgba(168,85,247,0.25)] relative' : ''}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-[10px] font-extrabold text-white rounded-full uppercase tracking-wider shadow-[0_0_15px_rgba(168,85,247,0.5)]">
-                    Most Popular
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-purple-600 via-indigo-500 to-purple-600 text-[10px] font-extrabold text-white rounded-full uppercase tracking-wider shadow-[0_0_20px_rgba(168,85,247,0.6)] flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-cyan-300" /> Most Popular
                   </div>
                 )}
 
@@ -82,7 +82,7 @@ export default function Pricing() {
                   <div>
                     <span className="text-xs font-extrabold tracking-widest uppercase text-gray-400 block">{plan.name}</span>
                     <div className="flex items-baseline gap-1 mt-3">
-                      <span className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">{plan.price}</span>
+                      <span className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight font-mono">{plan.price}</span>
                       <span className="text-xs text-gray-500 font-semibold">{plan.period}</span>
                     </div>
                   </div>

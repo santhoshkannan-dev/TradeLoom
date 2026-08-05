@@ -1,8 +1,41 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Building2, FileSpreadsheet, SlidersHorizontal, Cpu, CheckCircle2 } from 'lucide-react';
 import { Container } from '../../../components/ui/Container';
 import { GlassCard } from '../../../components/ui/GlassCard';
 import { fadeUp, staggerContainer } from '../../../lib/animations';
+
+function CountUpNumber({ end, prefix = '', suffix = '', decimals = 0 }: { end: number; prefix?: string; suffix?: string; decimals?: number }) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const duration = 2000;
+    const steps = 50;
+    const stepTime = duration / steps;
+    const increment = end / steps;
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setValue(end);
+        clearInterval(timer);
+      } else {
+        setValue(start);
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [end]);
+
+  return (
+    <span>
+      {prefix}
+      {decimals > 0 ? value.toFixed(decimals) : Math.floor(value).toLocaleString()}
+      {suffix}
+    </span>
+  );
+}
 
 export default function Architecture() {
   return (
@@ -109,15 +142,21 @@ export default function Architecture() {
 
           <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto pt-8 border-t border-white/10 text-center">
             <div className="space-y-1">
-              <div className="text-4xl font-extrabold text-white tracking-tight">1M+</div>
+              <div className="text-4xl font-extrabold text-white tracking-tight font-mono">
+                <CountUpNumber end={1000000} suffix="+" />
+              </div>
               <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">Assets Normalized</div>
             </div>
             <div className="space-y-1">
-              <div className="text-4xl font-extrabold text-white tracking-tight">$2B+</div>
+              <div className="text-4xl font-extrabold text-white tracking-tight font-mono">
+                <CountUpNumber end={2} prefix="$" suffix="B+" />
+              </div>
               <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">Under Analysis</div>
             </div>
             <div className="space-y-1">
-              <div className="text-4xl font-extrabold text-white tracking-tight">4.8/5</div>
+              <div className="text-4xl font-extrabold text-white tracking-tight font-mono">
+                <CountUpNumber end={4.8} suffix="/5" decimals={1} />
+              </div>
               <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">Analyst Rating</div>
             </div>
           </motion.div>

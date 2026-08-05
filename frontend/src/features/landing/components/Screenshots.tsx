@@ -1,10 +1,66 @@
-import { motion } from 'framer-motion';
-import { Activity, Radio, BarChart2, Bot, Send } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Activity, Radio, BarChart2, Bot, Send, Sparkles, Loader2 } from 'lucide-react';
 import { Container } from '../../../components/ui/Container';
 import { GlassCard } from '../../../components/ui/GlassCard';
 import { fadeUp, staggerContainer } from '../../../lib/animations';
 
+interface AIQuestion {
+  question: string;
+  answer: string;
+  confidence: number;
+}
+
 export default function Screenshots() {
+  const samplePrompts: AIQuestion[] = [
+    {
+      question: "Why did my portfolio drop today compared to NIFTY 50?",
+      answer: "Your decline (-1.2%) was driven by a 38% sector exposure to mid-cap IT stocks (INFY, TCS). NIFTY IT fell 2.4% following global cloud guidance revisions.",
+      confidence: 96,
+    },
+    {
+      question: "What is my Value at Risk (VaR) for tomorrow?",
+      answer: "Your 1-day 95% VaR is -$1,240. There is a 5% historical probability of your portfolio losing more than $1,240 in a single trading session.",
+      confidence: 94,
+    },
+    {
+      question: "Should I rebalance my equity vs debt allocation?",
+      answer: "Your current equity weight (55%) is 5% above your target benchmark. Rebalancing 5% into short-duration debt will reduce overall portfolio volatility by 8.4%.",
+      confidence: 91,
+    },
+  ];
+
+  const [promptIndex, setPromptIndex] = useState(0);
+  const [isThinking, setIsThinking] = useState(false);
+  const [displayedText, setDisplayedText] = useState('');
+
+  const currentQA = samplePrompts[promptIndex];
+
+  // Typing effect simulation
+  useEffect(() => {
+    setIsThinking(true);
+    setDisplayedText('');
+
+    const thinkingTimer = setTimeout(() => {
+      setIsThinking(false);
+      let charIndex = 0;
+      const fullText = currentQA.answer;
+
+      const typingInterval = setInterval(() => {
+        if (charIndex < fullText.length) {
+          setDisplayedText(fullText.slice(0, charIndex + 1));
+          charIndex++;
+        } else {
+          clearInterval(typingInterval);
+        }
+      }, 20);
+
+      return () => clearInterval(typingInterval);
+    }, 800);
+
+    return () => clearTimeout(thinkingTimer);
+  }, [promptIndex]);
+
   return (
     <section id="intelligence" className="py-24 border-t border-white/10 relative overflow-hidden">
       <Container>
@@ -41,11 +97,11 @@ export default function Screenshots() {
               <div className="grid grid-cols-2 gap-4 pt-2">
                 <div className="p-4 bg-[#121028]/80 border border-white/10 rounded-2xl">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block mb-1">Sharpe Ratio</span>
-                  <span className="text-2xl font-extrabold text-white">2.41</span>
+                  <span className="text-2xl font-extrabold text-white font-mono">2.41</span>
                 </div>
                 <div className="p-4 bg-[#121028]/80 border border-white/10 rounded-2xl">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block mb-1">VaR (95%)</span>
-                  <span className="text-2xl font-extrabold text-rose-400">-$1,240</span>
+                  <span className="text-2xl font-extrabold text-rose-400 font-mono">-$1,240</span>
                 </div>
               </div>
 
@@ -111,36 +167,72 @@ export default function Screenshots() {
                 <div className="w-full bg-emerald-500/30 h-16 rounded-t" />
                 <div className="w-full bg-emerald-500/40 h-20 rounded-t" />
                 <div className="w-full bg-emerald-500/90 h-28 rounded-t relative flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.4)]">
-                  <span className="text-[9px] font-bold text-black bg-emerald-300 px-1 rounded absolute -top-4">88%</span>
+                  <span className="text-[9px] font-bold text-black bg-emerald-300 px-1 rounded absolute -top-4 font-mono">88%</span>
                 </div>
                 <div className="w-full bg-emerald-500/30 h-14 rounded-t" />
               </div>
             </GlassCard>
 
-            {/* Card 4: TradeLoom AI */}
-            <GlassCard glow className="space-y-6 flex flex-col justify-between relative">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-purple-500/10 rounded-xl text-purple-400 border border-purple-500/20">
-                  <Bot className="w-5 h-5" />
+            {/* Card 4: Interactive TradeLoom AI Demo */}
+            <GlassCard glow className="space-y-5 flex flex-col justify-between relative">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-purple-500/10 rounded-xl text-purple-400 border border-purple-500/20">
+                    <Bot className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    TradeLoom AI <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                  </h3>
                 </div>
-                <h3 className="text-lg font-bold text-white">TradeLoom AI</h3>
+                <span className="text-[10px] text-purple-300 font-mono font-semibold bg-purple-500/20 border border-purple-500/30 px-2 py-0.5 rounded-full">
+                  {currentQA.confidence}% Confidence
+                </span>
               </div>
 
-              <div className="space-y-3 text-xs">
-                <div className="p-3 bg-purple-500/10 border border-purple-500/20 text-purple-200 rounded-2xl rounded-tr-none text-right ml-8">
-                  Why did my portfolio drop today compared to the NIFTY 50?
+              {/* Sample Prompts Switcher */}
+              <div className="flex gap-2 overflow-x-auto py-1">
+                {samplePrompts.map((p, idx) => (
+                  <button
+                    key={p.question}
+                    onClick={() => setPromptIndex(idx)}
+                    className={`text-[10px] px-2.5 py-1 rounded-lg border transition-all whitespace-nowrap ${
+                      idx === promptIndex
+                        ? 'bg-purple-500/20 border-purple-500/40 text-purple-200 font-semibold'
+                        : 'bg-white/5 border-white/5 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    Prompt #{idx + 1}
+                  </button>
+                ))}
+              </div>
+
+              {/* Interactive Chat Window */}
+              <div className="space-y-3 text-xs min-h-[130px] flex flex-col justify-center">
+                <div className="p-3 bg-purple-500/10 border border-purple-500/20 text-purple-200 rounded-2xl rounded-tr-none text-right ml-6 font-medium">
+                  {currentQA.question}
                 </div>
 
-                <div className="p-3 bg-[#121028]/90 border border-white/10 text-gray-300 rounded-2xl rounded-tl-none mr-4 leading-relaxed">
-                  Your drop was driven by high exposure to mid-cap IT stocks which saw a sector-wide correction. Specifically, your 12% overweight position in...
+                <div className="p-3 bg-[#121028]/90 border border-white/10 text-gray-300 rounded-2xl rounded-tl-none mr-2 leading-relaxed min-h-[60px] relative">
+                  {isThinking ? (
+                    <div className="flex items-center gap-2 text-purple-400 text-xs">
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Synthesizing portfolio neural scan...</span>
+                    </div>
+                  ) : (
+                    <>
+                      {displayedText}
+                      <span className="inline-block w-1.5 h-3.5 bg-purple-400 ml-1 animate-pulse" />
+                    </>
+                  )}
                 </div>
               </div>
 
+              {/* Input Box Mockup */}
               <div className="relative flex items-center">
                 <input
                   type="text"
                   readOnly
-                  value="Ask about your risk exposure..."
+                  value="Click a prompt above to simulate AI query..."
                   className="w-full bg-[#121028] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-gray-400 focus:outline-none"
                 />
                 <button className="absolute right-2 p-1.5 bg-purple-600 rounded-lg text-white">
